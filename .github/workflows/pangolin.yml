@@ -1,0 +1,36 @@
+
+name: test_pangolin
+on: 
+  push:
+    branches: [ actions_dev ]
+  pull_request:
+    branches: [ actions_dev ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.6
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.6
+
+      - name: clone
+        run: |
+        git clone https://github.com/cov-lineages/pangolin.git
+
+      - name: Install dependencies
+        run: |
+        cd $GITHUB_WORKSPACE/pangolin
+        $CONDA/bin/conda env update --file environment.yml --name base
+
+      - name: Install pangolin
+        run: | 
+        cd $GITHUB_WORKSPACE/pangolin
+        python setup.py install
+
+      - name: Check version
+        run: $CONDA/bin/pangolin -v
